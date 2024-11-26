@@ -12,9 +12,11 @@ class Gerrymanderer():
 
     def visited_setup(self):
         visited = [False] * (self.d ** 2)
-        for i in self.marked:
+        i = 0
+        while i < self.d ** 2:
             if self.marked[i] == True:
                 visited[i] = True
+            i += 1
         return visited
 
 
@@ -28,16 +30,26 @@ class Gerrymanderer():
             # lose a district badly, then maks a random district. has to reset visited each time using visited_setup
             district = self.dfs_win(r, 0, [], visited)
             if district:
+                for i in district:
+                    self.marked[i] = True
                 self.districts.append(district)
             else:
                 visited = self.visited_setup()
                 district = self.dfs_lose(r, 0, [], visited)
                 if district:
+                    for i in district:
+                        self.marked[i] = True
                     self.districts.append(district)
                 else:
                     visited = self.visited_setup()
-                    self.districts.append(self.dfs_random(r, [], visited))
-            return self.districts
+                    district = self.dfs_random(r, [], visited)
+                    if district is None:
+                        return self.districts
+                    for i in district:
+                        self.marked[i] = True
+                    self.districts.append(district)
+            self.number_visited += self.d
+        return self.districts
             
     def dfs_win(self, v: int, true_count: int, district: list, visited: list):
         visited[v] = True
