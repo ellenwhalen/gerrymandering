@@ -29,6 +29,8 @@ class Gerrymanderer():
             # horrible way this is nested. first sees if it can narrowly win a district at r, then sees if it can 
             # lose a district badly, then maks a random district. has to reset visited each time using visited_setup
             district = self.dfs_win(r, 0, [], visited)
+            # self.districts.append(district)
+            # return self.districts
             if district:
                 for i in district:
                     self.marked[i] = True
@@ -63,13 +65,14 @@ class Gerrymanderer():
                         true_count += 1
                         district.append(w)
                     else:
-                        return
+                        continue
                 else:
                     if self.electorate.votes[w] == True:
-                        return
+                        continue
                     else:
                         district.append(w)
                 self.dfs_win(w, true_count, district, visited) 
+            return None
     
     def dfs_lose(self, v: int, false_count: int, district: list, visited: list):
         visited[v] = True
@@ -79,10 +82,11 @@ class Gerrymanderer():
             if not visited[w]:
                 # this one throws out even more cases than dfs_win. lol
                 if self.electorate.votes[w] == True:
-                    return
+                    continue
                 else:
                     district.append(w)
                 self.dfs_lose(w, false_count, district, visited)
+            return None
 
     def dfs_random(self, v: int, district: list, visited: list):
         visited[v] = True
@@ -105,4 +109,3 @@ class Gerrymanderer():
 # print(e.votes)
 # g = Gerrymanderer(e)
 # print(g.gerrymander())
-
