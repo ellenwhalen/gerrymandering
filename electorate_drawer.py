@@ -35,12 +35,13 @@ from gerrymanderer import Gerrymanderer
 # districts = Striper().gerrymander(e, True)
 # draw(e, districts)
 
-e = Electorate(5)
+e = Electorate(3)
 g = Gerrymanderer(e)
 districts = g.gerrymander()
 print(districts)
-visited = g.visited_setup()
-g.dfs_count(9, visited)
-print(g.count)
+# districts = [[0, 1, 2], [6, 3, 4]]
+# g.checked = g.visited_setup()
+# g.dfs_count(16)
+# print(g.count)
 
 draw(e, districts)

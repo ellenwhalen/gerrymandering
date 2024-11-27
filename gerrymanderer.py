@@ -6,6 +6,7 @@ class Gerrymanderer():
         self.electorate = electorate
         self.d = electorate.district_size()
         self.marked = [False for _ in self.electorate.graph.adj]
+        self.checked = [False for _ in self.electorate.graph.adj]
         self.number_visited = 0
         self.count = 1
         self.districts = []
@@ -22,34 +23,60 @@ class Gerrymanderer():
 
     def gerrymander(self):
         while self.number_visited < (self.d ** 2):
-            r = random.randint(0, self.d ** 2 - 1)
-            while self.marked[r] is True:  
+            while len(self.districts) < self.d:
                 r = random.randint(0, self.d ** 2 - 1)
-            visited = self.visited_setup()
+                while self.marked[r] is True:  
+                    r = random.randint(0, self.d ** 2 - 1)
+                visited = self.visited_setup()
             # horrible way this is nested. first sees if it can narrowly win a district at r, then sees if it can 
             # lose a district badly, then maks a random district. has to reset visited each time using visited_setup
-            district = self.dfs_win(r, 0, [], visited)
-            # self.districts.append(district)
-            # return self.districts
-            if district:
-                for i in district:
-                    self.marked[i] = True
-                self.districts.append(district)
-            else:
-                visited = self.visited_setup()
-                district = self.dfs_lose(r, 0, [], visited)
+                district = self.dfs_win(r, 0, [r], visited)
+                # self.districts.append(district)
+                # return self.districts
                 if district:
-                    for i in district:
-                        self.marked[i] = True
-                    self.districts.append(district)
+                    pass
+                    # for i in district:
+                    #     self.marked[i] = True
+                    # self.districts.append(district)
                 else:
                     visited = self.visited_setup()
-                    district = self.dfs_random(r, [], visited)
-                    if district is None:
-                        return self.districts
+                    district = self.dfs_lose(r, 0, [r], visited)
+                    if district:
+                        pass
+                    #     for i in district:
+                    #         self.marked[i] = True
+                    #     self.districts.append(district)
+                    else:
+                        visited = self.visited_setup()
+                        district = self.dfs_random(r, [r], visited)
+                        # if district is None:
+                        #     return self.districts
+                        # for i in district:
+                        #     self.marked[i] = True
+                        # self.districts.append(district)
+                if district is None:
+                    continue
+                for i in district:
+                    self.marked[i] = True
+                self.checked = self.visited_setup()
+                i = 0
+                while i < len(self.checked):
+                    self.count = 1
+                    if self.checked[i] == True:
+                        i += 1
+                        continue
+                    else:
+                        self.dfs_count(i)
+                    if self.count % self.d != 0:
+                        for i in district:
+                            self.marked[i] = False
+                        break
+                    i += 1
+                if i == len(self.checked):
                     for i in district:
                         self.marked[i] = True
                     self.districts.append(district)
+
             self.number_visited += self.d
         return self.districts
             
@@ -97,12 +124,12 @@ class Gerrymanderer():
                 district.append(w)
                 self.dfs_random(w, district, visited)
     
-    def dfs_count(self, v: int, visited: list):
-        visited[v] = True
+    def dfs_count(self, v: int):
+        self.checked[v] = True
         for w in self.electorate.graph.adj[v]:
-            if not visited[w]:
+            if not self.checked[w]:
                 self.count += 1
-                self.dfs_count(w, visited)
+                self.dfs_count(w)
         
 
 
