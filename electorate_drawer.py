@@ -39,7 +39,7 @@ e = Electorate(3)
 g = Gerrymanderer(e)
 districts = g.gerrymander()
 print(districts)
-# districts = [[0, 1, 2], [6, 3, 4]]
+#  
 # g.checked = g.visited_setup()
 # g.dfs_count(16)
 # print(g.count)
