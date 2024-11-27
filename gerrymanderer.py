@@ -7,7 +7,7 @@ class Gerrymanderer():
         self.d = electorate.district_size()
         self.marked = [False for _ in self.electorate.graph.adj]
         self.number_visited = 0
-        self.depth = 0
+        self.count = 1
         self.districts = []
 
     def visited_setup(self):
@@ -96,6 +96,13 @@ class Gerrymanderer():
             if not visited[w]:
                 district.append(w)
                 self.dfs_random(w, district, visited)
+    
+    def dfs_count(self, v: int, visited: list):
+        visited[v] = True
+        for w in self.electorate.graph.adj[v]:
+            if not visited[w]:
+                self.count += 1
+                self.dfs_count(w, visited)
         
 
 
@@ -109,3 +116,4 @@ class Gerrymanderer():
 # print(e.votes)
 # g = Gerrymanderer(e)
 # print(g.gerrymander())
+
