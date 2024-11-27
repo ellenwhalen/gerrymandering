@@ -23,7 +23,7 @@ class Gerrymanderer():
 
     def gerrymander(self):
         # While the number of districts is less than d, the desired number of districts:
-        while len(self.districts) < self.d:
+        while len(self.districts) < self.d - 1:
             # generate a random index and see if there's already a district there, loop until you
             # get a valid index
             r = random.randint(0, self.d ** 2 - 1)
@@ -80,6 +80,11 @@ class Gerrymanderer():
             # If after all of that you end up with a valid district, add it to districts
             if i == len(self.checked):
                 self.districts.append(district)
+        district = []
+        for i in range(len(self.marked)):
+            if self.marked[i] == False:
+                district.append(i)
+        self.districts.append(district)
         return self.districts
             
     def dfs_win(self, v: int, true_count: int, district: list, visited: list):
